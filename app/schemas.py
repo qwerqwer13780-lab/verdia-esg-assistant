@@ -13,13 +13,5 @@ class ChatRequest(BaseModel):
     history: List[ChatTurn] = Field(default_factory=list)
 
 
-class SourceItem(BaseModel):
-    source: str
-    page: int
-    heading: str = ''
-    score: float
-
-
 class ChatResponse(BaseModel):
     answer: str
-    sources: List[SourceItem] = Field(default_factory=list)

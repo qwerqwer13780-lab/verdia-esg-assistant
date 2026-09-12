@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.rag_engine import ask_rag
-from app.schemas import ChatRequest
+from app.schemas import ChatRequest, ChatResponse
 
 
 app = FastAPI(
@@ -32,28 +32,25 @@ def health():
 
 def _chat(request: ChatRequest):
     history = [turn.model_dump() for turn in request.history]
-    answer, sources = ask_rag(request.question, history)
-    return {
-        'answer': answer,
-        'sources': sources,
-    }
+    answer = ask_rag(request.question, history)
+    return {'answer': answer}
 
 
 @app.post(
     '/api/esg/chat',
+    response_model=ChatResponse,
     tags=['ESG Assistant'],
     summary='Ask Verdia ESG Assistant',
     description=(
         'Ask an ESG question. The assistant retrieves relevant evidence from the fixed '
-        'Verdia ESG PDF knowledge base and generates an answer grounded in that context.'
+        'Verdia ESG PDF knowledge base and returns a clean grounded answer.'
     ),
 )
 def esg_chat(request: ChatRequest):
     return _chat(request)
 
 
-# Kept only for backward compatibility. It still works, but it is intentionally
-# hidden from Swagger so the app/backend team sees only the supported public API.
-@app.post('/api/rag/chat', include_in_schema=False)
+# Backward-compatible alias. It still works but stays hidden from Swagger.
+@app.post('/api/rag/chat', response_model=ChatResponse, include_in_schema=False)
 def rag_chat(request: ChatRequest):
     return _chat(request)

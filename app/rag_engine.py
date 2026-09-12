@@ -38,8 +38,10 @@ Rules:
 - If the available information is incomplete, say so naturally and briefly.
 - If there is not enough information, say you do not have enough information to answer confidently.
 - Answer in the same language as the user when practical.
-- Write naturally, like a normal ChatGPT conversation.
-- Be direct, clear, and concise unless the user asks for detail.
+- Write naturally and professionally, like a polished ESG assistant.
+- Give a clear, complete answer rather than sounding like raw retrieved text.
+- Use short paragraphs or bullets only when they improve readability.
+- Be direct and concise unless the user asks for more detail.
 - Do not mention file names, page numbers, sources, citations, retrieved chunks, or the knowledge base unless the user explicitly asks for them.
 - Do not add a Sources section.
 - Avoid tables unless the user asks for one.
@@ -162,7 +164,7 @@ def ask_rag(question, history=None):
 
     if is_greeting(question):
         answer = generate_answer(question)
-        return answer, []
+        return answer
 
     search_question = question
 
@@ -172,7 +174,9 @@ def ask_rag(question, history=None):
     results = retrieve_with_threshold(search_question, k=TOP_K)
 
     if results is None:
-        return "I don't have enough information to answer that confidently.", []
+        if any('\u0600' <= char <= '\u06ff' for char in question):
+            return 'المعلومات المتاحة لدي لا تكفي للإجابة على هذا السؤال بثقة.'
+        return "I don't have enough information to answer that confidently."
 
     context = build_context(results)
     answer = generate_answer(
@@ -181,14 +185,4 @@ def ask_rag(question, history=None):
         previous_question=previous_question if is_follow_up(question) else '',
     )
 
-    sources = [
-        {
-            'source': result['source'],
-            'page': result['page'],
-            'heading': result['heading'],
-            'score': result['score'],
-        }
-        for result in results
-    ]
-
-    return answer, sources
+    return answer
