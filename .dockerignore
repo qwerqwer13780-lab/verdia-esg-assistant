@@ -1,0 +1,10 @@
+.env
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.git
+.gitignore
+data/pdfs/*.pdf
+data/markdown/*.md

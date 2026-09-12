@@ -1,0 +1,17 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+
+# Source documents are local/private by default.
+data/pdfs/*.pdf
+data/markdown/
+
+# Generated RAG assets may be committed intentionally for static deployment.
+storage/*
+!storage/.gitkeep
+!storage/esg.index
+!storage/chunks.json
