@@ -1,0 +1,8 @@
+Minimal production changes only:
+1. Loaded embedding_model, FAISS index, and chunks in app/rag_engine.py (they were undefined in the uploaded API code).
+2. Restored the notebook system prompt and follow-up/retrieval behavior.
+3. Fixed scripts/build_index.py import path so it runs as a script.
+4. Added /api/esg/chat as an alias only; /api/rag/chat remains unchanged.
+5. Added Dockerfile + railway.toml for Railway.
+6. Added the seven supplied ESG/CBAM PDFs as the fixed knowledge base.
+7. Docker builds the FAISS index automatically. No PDF upload endpoint was added.
